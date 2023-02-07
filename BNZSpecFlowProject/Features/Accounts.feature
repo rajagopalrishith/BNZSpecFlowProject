@@ -47,7 +47,15 @@ Scenario: Verify that Payees can be sorted by name
 	Then I verify the list is sorted Descending by default
 
 @regression
-Scenario: Verify that payments transfer are correct
+Scenario: Verify that payments transfer are correctly updated to respective accounts 
 	Given I click CheckitOut Option
 	And I fetch balances of accounts
+	When I select Menu
+	And I click Pay or transfer option
+	And I transfer amount as per below parameters
+	| FromAccount | ToAccount | Amount |
+	| Everyday    | Bills     | 1000   |
+   Then I verify the accounts are updated as per below table
+   | FromAccount | ToAccount | Amount |
+   | Everyday    | Bills     | 1000   |
 	

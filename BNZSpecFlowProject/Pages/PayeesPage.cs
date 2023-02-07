@@ -36,6 +36,18 @@ namespace BNZ.Pages
 
         private readonly By SortByName = By.XPath("//span[contains(.,'Name')]");
 
+        private readonly By PayorTransfer = By.XPath("//span[contains(.,'Pay or transfer')]");
+
+        private readonly By ChooseFromAccount  = By.XPath("//span[contains(.,'Choose account')][1]");
+
+        private readonly By ChooseToAccount = By.XPath("//span[contains(.,'Choose account, payee, or someone new')]");
+
+
+
+
+        private readonly By SelectTypeofAccountsFromToFields   = By.XPath("//span[contains(.,'Accounts')]");
+
+
         private readonly By AddPayeeSubmitButton = By.XPath("//button[contains(.,'Add') and @class[contains(., 'js-submit')]]");
 
         private readonly By AddPayeeSubmitButtonDisabled  = By.XPath("//button[contains(.,'Add') and @class[contains(., 'js-submit Button Button--primary Button--disabled')]]");
@@ -43,6 +55,17 @@ namespace BNZ.Pages
         private readonly By PayeeAddedToastMessage  = By.XPath("//span[@role='alert' and text()='Payee added']");
 
         private readonly By PayeeRequiredFieldMessage  = By.XPath("//input[@aria-label='Payee Name is a required field. Please complete to continue.']");
+
+        private readonly By EverydayAccount = By.XPath("//div[@id='account-ACC-1']//span[@class='account-balance']");
+
+        private readonly By EverydayBills = By.XPath("//div[@id='account-ACC-5']//span[@class='account-balance']");
+
+
+        private readonly By TransferAmountTxtField  = By.XPath("//input[@data-monitoring-label='Transfer Form Amount']");
+
+        private readonly By TransferButton =  By.XPath("//button[@data-monitoring-label='Transfer Form Submit']//span[contains(.,'Transfer')]");
+
+
 
 
         public IList<string> GetallPayees() 
@@ -56,6 +79,62 @@ namespace BNZ.Pages
             }
             return PayeeNames;
         }
+
+        private By ToAccountType(string message)
+
+        {
+            return By.XPath("//div[@class='imageWrapper-0-5-62']//img[contains(@alt,'"+message+"')]");
+        }
+
+
+        
+        private By FromAccountType(string message)
+
+        {
+            return By.XPath("//div[@class='imageWrapper-0-5-62']//img[@alt='"+message+"']");
+        }
+
+        public void SelectFromAccount(string AccountType)
+
+        {
+            System.Threading.Thread.Sleep(2000);
+            ClickOnElement(FromAccountType(AccountType));
+        }
+
+        public void SelectToAccount(string AccountType)
+
+        {
+            System.Threading.Thread.Sleep(2000);
+            ClickOnElement(ToAccountType(AccountType));
+        }
+
+        public void clickChooseFromAccount()
+        {
+
+            ClickOnElement(ChooseFromAccount);
+        }
+
+        public void clickChooseToccount()
+        {
+
+            ClickOnElement(ChooseToAccount);
+        }
+
+        public void ClickSelectAccountCategoryfromTo()
+        {
+
+            System.Threading.Thread.Sleep(2000);
+            ClickOnElement(SelectTypeofAccountsFromToFields);
+        }
+
+
+        public void ClickTransferButtonforPayments()
+
+        {
+            ClickOnElement(TransferButton);
+
+        }
+
 
         private By PayeesNames(string message) 
         
@@ -75,10 +154,42 @@ namespace BNZ.Pages
             ClickOnElement(AddPayees);
         }
 
+      
+
         public void clickSortByName()
         {
 
             ClickOnElement(SortByName);
+
+        }
+
+        public void clickPayorTransfer()
+        {
+
+            ClickOnElement(PayorTransfer); ;
+
+
+        }
+
+
+        public void SetAmount(string  amount)
+        {
+            TypeOnElement(TransferAmountTxtField, amount);
+
+        }
+
+        public string GetEverydayaccountBalance()
+        {
+
+            return GetElementText(EverydayAccount);
+
+        }
+
+        public string GetBillsBalance()
+        {
+
+            return GetElementText(EverydayBills);
+
         }
 
         public void clickAddpayeesSubmitbuttonDisabled()

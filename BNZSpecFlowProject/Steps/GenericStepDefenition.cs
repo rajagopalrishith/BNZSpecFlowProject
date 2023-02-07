@@ -1,4 +1,5 @@
 ﻿using BNZ.Pages;
+using BNZSpecFlowProject.Context;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
@@ -17,15 +18,18 @@ using TechTalk.SpecFlow.Assist;
 namespace BNZSpecFlowProject.Steps
 {
     [Binding]
-    public class GenericStepDefenitions 
+    public class GenericStepDefenitions
     {
-        private LandingPage _LandingPage  { get; }
+        private LandingPage _LandingPage { get; }
         private PayeesPage _PayeePage { get; }
 
-        public GenericStepDefenitions(LandingPage landingPage, PayeesPage payeesPage)
+        private DataContext DataContext;
+
+        public GenericStepDefenitions(LandingPage landingPage, PayeesPage payeesPage, DataContext dataContext)
         {
-       _LandingPage= landingPage;
-        _PayeePage= payeesPage;
+            _LandingPage = landingPage;
+            _PayeePage = payeesPage;
+            DataContext = dataContext;
         }
 
         [When(@"I open the bnz demo application home page")]
@@ -84,7 +88,7 @@ namespace BNZSpecFlowProject.Steps
 
             _PayeePage.Waitfor5seconds();
             _PayeePage.clickAddpayeesSubmitbutton();
-             
+
         }
 
 
@@ -94,7 +98,7 @@ namespace BNZSpecFlowProject.Steps
             _PayeePage.clickAddpayeesSubmitbuttonDisabled();
         }
 
-        
+
 
         [Then(@"I verify Payee with name ([^']*) is in the list of Payees added")]
         public void ThenIVerifyPayeeWithNameIsInTheListOfPayeesAdded(string message)
@@ -114,14 +118,27 @@ namespace BNZSpecFlowProject.Steps
         {
             var PayeeNames = _PayeePage.GetallPayees();
             var sorted = new List<string>();
-           
-            
+
+
         }
+
+
+        [When(@"I click Pay or transfer option")]
+        public void WhenIClickPayOrTransferOption()
+        {
+            _PayeePage.clickPayorTransfer();
+            _PayeePage.Waitfor2seconds();
+        }
+
 
         [Given(@"I fetch balances of accounts")]
         public void GivenIFetchBalancesOfAccounts()
         {
-            throw new PendingStepException();
+            var everdaybalance = Double.Parse(_PayeePage.GetEverydayaccountBalance().Replace(",", ""));
+            var everdaybills = Double.Parse(_PayeePage.GetBillsBalance().Replace(",", ""));
+            System.Threading.Thread.Sleep(2000);
+            DataContext.EverydayAccountBalance = everdaybalance;
+            DataContext.BillsAccountBalance = everdaybills;
         }
 
 
@@ -130,13 +147,13 @@ namespace BNZSpecFlowProject.Steps
         {
             var PayeeNames = _PayeePage.GetallPayees();
             var sorted = new List<string>();
-            if(sortorder == "Ascending")
+            if (sortorder == "Ascending")
             {
-            sorted.AddRange(PayeeNames.OrderBy(o => o));
+                sorted.AddRange(PayeeNames.OrderBy(o => o));
             }
             else
             {
-            sorted.AddRange(PayeeNames.OrderByDescending(o => o));
+                sorted.AddRange(PayeeNames.OrderByDescending(o => o));
             }
             Assert.IsTrue(PayeeNames.SequenceEqual(sorted));
             _PayeePage.Waitfor2seconds();
@@ -158,6 +175,33 @@ namespace BNZSpecFlowProject.Steps
             Assert.IsTrue(_PayeePage.IsPayeeAddedToastDisplayed(), "Message is not displayed");
         }
 
+
+
+        [When(@"I transfer amount as per below parameters")]
+        public void WhenITransferAmountAsPerBelowParameters(Table table)
+        {
+            foreach (var item in table.Rows)
+
+            {
+                string FromAccount = item.GetString("FromAccount");
+                string ToAccount = item.GetString("ToAccount");
+                string Amount = item.GetString("Amount");
+                if (FromAccount != null && FromAccount != string.Empty)
+                {
+                    _PayeePage.clickChooseFromAccount();
+                    _PayeePage.SelectFromAccount(FromAccount);
+                }
+
+                if (ToAccount != null && ToAccount != string.Empty)
+                {
+                    _PayeePage.clickChooseToccount();
+                    _PayeePage.ClickSelectAccountCategoryfromTo();
+                    _PayeePage.SelectToAccount(ToAccount);
+                }
+                _PayeePage.SetAmount(Amount);
+                _PayeePage.ClickTransferButtonforPayments();
+            }
+        }
 
 
         [When(@"I enter bank information as below")]
@@ -192,5 +236,25 @@ namespace BNZSpecFlowProject.Steps
             }
 
         }
+
+        [Then(@"I verify the accounts are updated as per below table")]
+        public void ThenIVerifyTheAccountsAreUpdatedAsPerBelowTable(Table table)
+        {
+            foreach (var item in table.Rows)
+            {
+                var amount = int.Parse(item.GetString("Amount"));
+                System.Threading.Thread.Sleep(2000);
+                var CurrentEverydayaccountBalance = Double.Parse(_PayeePage.GetEverydayaccountBalance().Replace(",", ""));
+                var CurrentEveryDayBillBalance = Double.Parse(_PayeePage.GetBillsBalance().Replace(",", ""));
+                var ExpectedEveryDayBalanceAmount = 0.0;
+                var ExpectedBillBalanceAmount = 0.0;
+                Assert.That(DataContext.EverydayAccountBalance - amount, Is.EqualTo(CurrentEverydayaccountBalance), "Amount calculation is incorrect");
+                Assert.That(DataContext.BillsAccountBalance + amount, Is.EqualTo(CurrentEveryDayBillBalance), "Amount calculation is incorrect");
+            }
+
+        }
+
+
     }
+
 }

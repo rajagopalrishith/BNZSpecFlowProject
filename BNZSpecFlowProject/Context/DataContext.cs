@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,6 @@ namespace BNZSpecFlowProject.Context
 
         public double EverydayAccountBalance { get; set; }
 
-        public string BillsAccountBalance { get; set; }
+        public double BillsAccountBalance { get; set; }
     }
 }
