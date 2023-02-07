@@ -118,6 +118,11 @@ namespace BNZSpecFlowProject.Steps
             
         }
 
+        [Given(@"I fetch balances of accounts")]
+        public void GivenIFetchBalancesOfAccounts()
+        {
+            throw new PendingStepException();
+        }
 
 
         [Then(@"I verify the list is sorted ([^']*) by default")]

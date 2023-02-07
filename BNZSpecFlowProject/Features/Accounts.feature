@@ -45,4 +45,9 @@ Scenario: Verify that Payees can be sorted by name
 	Then I verify the list is sorted Ascending by default
 	And I sort the payees list by name 
 	Then I verify the list is sorted Descending by default
+
+@regression
+Scenario: Verify that payments transfer are correct
+	Given I click CheckitOut Option
+	And I fetch balances of accounts
 	
