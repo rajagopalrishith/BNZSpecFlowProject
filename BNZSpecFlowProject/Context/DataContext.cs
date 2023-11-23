@@ -10,8 +10,11 @@ namespace BNZSpecFlowProject.Context
     public class DataContext
     {
 
-        public double EverydayAccountBalance { get; set; }
+        public double EverydayAccountInitialBalance { get; set; }
+        public double EverydayAccountCurrentBalance { get; set; }
 
-        public double BillsAccountBalance { get; set; }
+
+        public double BillsAccountInitialBalance { get; set; }
+        public double BillsAccountCurrentBalance { get; set; }
     }
 }

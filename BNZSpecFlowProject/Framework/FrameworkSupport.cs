@@ -1,21 +1,15 @@
-﻿using BoDi;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-using NUnit.Framework;
-using OpenQA.Selenium;
+﻿using NUnit.Framework;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
-using SpecFlowBuggy;
+using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
-using TechTalk.SpecFlow;
 
-namespace BNZSpecFlowProject
+namespace LearningProject.Framework
 {
     public class BasePage : TechTalk.SpecFlow.Steps
     {
@@ -44,7 +38,7 @@ namespace BNZSpecFlowProject
             try
             {
                 element = _wait.Until(d =>
-                {
+                { 
                     element = d.FindElement(elementLocator);
                     if (element.Enabled && element.Displayed)
                     {
@@ -194,7 +188,7 @@ namespace BNZSpecFlowProject
         public List<IWebElement> FindElements(By elementLocator)
         {
             WaitTillJavascriptLoad();
-            return Driver.FindElements(elementLocator).ToList();
+            return _driver.FindElements(elementLocator).ToList();
 
         }
 
@@ -410,8 +404,6 @@ namespace BNZSpecFlowProject
         {
             return GetElementAttribute(bylocator, "value");
         }
-
-
 
         public void SwitchToPopWindow()
         {
